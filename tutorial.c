@@ -81,15 +81,6 @@ void destroy_ll_node(ll_node*);
 
 
 
-//Data Structure Operations
-void linked_list_insertion(master_node*, void *);
-void * get_next_for_stacks(master_node *);
-void * get_next_for_queues(master_node *);
-void deletion_for_linked_list(master_node *, ll_node *);
-void quick_sort_for_linked_list(master_node *);
-ll_node * quick_sort(master_node* , ll_node *);
-void no_sort(master_node *);
-comparison no_sort_by(void *, void *);
 
 //################################
 // Linked list 
@@ -100,6 +91,13 @@ comparison no_sort_by(void *, void *);
 // Optional:
 //	sort
 //	length
+void insertion_for_linked_list(master_node*, void *);
+void deletion_for_linked_list(master_node *, ll_node *);
+void quick_sort_for_linked_list(master_node *);
+ll_node * quick_sort(master_node* , ll_node *);
+void no_sort(master_node *);
+comparison no_sort_by(void *, void *);
+
 //################################
 // Stack
 //
@@ -108,6 +106,9 @@ comparison no_sort_by(void *, void *);
 //	pop - remove the top item from stack	 O(1)
 //	search - find element x			 O(n)
 //	delete - remove element x		 O(n)
+
+void * get_next_for_stacks(master_node *);
+
 //############################################
 // Queue
 //
@@ -118,6 +119,9 @@ comparison no_sort_by(void *, void *);
 //	remove: remove element x	 O(n)
 //Variations:
 //	circular queue - fixed length queue implement with array
+
+void * get_next_for_queues(master_node *);
+
 //############################################
 
 
@@ -194,18 +198,25 @@ int main(int argc, char **argv) {
   //	4. sort Algorithm {QUICK_SORT}
   //	5. field to sort by {f_name, l_name, address}
   //	6. ordering {ASCENDING, DESCENDING}
-  master_node * stack = create_master_node(linked_list_insertion,
-					   deletion_for_linked_list,
-					   get_next_for_stacks,
-					   no_sort,
-					   no_sort_by,
-					   NONE);
-  master_node * queue = create_master_node(linked_list_insertion,
+    master_node * linked_list = create_master_node(insertion_for_linked_list,
 					   deletion_for_linked_list,
 					   get_next_for_queues,
 					   quick_sort_for_linked_list,
 					   student_sort_by_first_name,
 					   ASCENDING);
+  
+  master_node * stack = create_master_node(insertion_for_linked_list,
+					   deletion_for_linked_list,
+					   get_next_for_stacks,
+					   no_sort,
+					   no_sort_by,
+					   NONE);
+  master_node * queue = create_master_node(insertion_for_linked_list,
+					   deletion_for_linked_list,
+					   get_next_for_queues,
+					   no_sort,
+					   no_sort_by,
+					   NONE);
   // CREATE STUDENT
   //	1. f_name
   //	2. l_name
@@ -248,6 +259,22 @@ int main(int argc, char **argv) {
   }
   
   
+  student * student7 = create_student("Everett", l_name, address);
+  student * student8 = create_student("John", l_name, address);
+  student * student9 = create_student("Tim", l_name, address);
+  
+  linked_list->insertion(linked_list, (void *) student9);
+  linked_list->insertion(linked_list, (void *) student8);
+  linked_list->insertion(linked_list, (void *) student7);
+
+  linked_list->sort_algorithm(linked_list);
+
+  while(linked_list->head)
+  {
+    current = (student *) linked_list->get_next_element(linked_list);
+    printf("First Name:%s\n", current->first_name);
+  }
+  
   
   return 0;
   
@@ -255,7 +282,11 @@ int main(int argc, char **argv) {
 }
 
 
-
+//###########################################################################
+//###########################################################################
+//Data Memory Management
+//###########################################################################
+//###########################################################################
 
 student * create_student(char * f_name, char * l_name, char * address)
 {
@@ -320,8 +351,12 @@ comparison student_sort_by_address(void * v_student1, void * v_student2)
 
 
 
-//Memory Management
 
+//###########################################################################
+//###########################################################################
+//Node Memory Management
+//###########################################################################
+//###########################################################################
 master_node * create_master_node(void (* insertion) (master_node *, void *),
 				 void (* deletion) (master_node *, ll_node *),
 				 void * (* get_next_element) (master_node *),
@@ -373,8 +408,12 @@ void destroy_ll_node(ll_node* node_to_be_destroyed)
   free(node_to_be_destroyed);
 }
 
+//###########################################################################
+//###########################################################################
 //Data Structure Operations
-void linked_list_insertion(master_node* master_p, void * data_to_be_inserted )
+//###########################################################################
+//###########################################################################
+void insertion_for_linked_list(master_node* master_p, void * data_to_be_inserted )
 {
 
   
@@ -389,6 +428,11 @@ void linked_list_insertion(master_node* master_p, void * data_to_be_inserted )
   node_to_be_inserted->previous = master_p->tail;
   master_p->tail = node_to_be_inserted;
 }
+void deletion_for_linked_list(master_node * master_p, ll_node * node_to_delete)
+{
+  return;
+}
+
 void * get_next_for_stacks(master_node * master_p)
 {
   ll_node * temp = master_p->tail;
@@ -426,10 +470,7 @@ void * get_next_for_queues(master_node * master_p)
   destroy_ll_node(temp);
   return data_to_return;
 }
-void deletion_for_linked_list(master_node * master_p, ll_node * node_to_delete)
-{
-  return;
-}
+
 
 //###################################################################################
 //###################################################################################
